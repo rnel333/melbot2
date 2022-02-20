@@ -63,7 +63,7 @@ class Utilities(commands.Cog):
         team_num = 2
         team = []
         for i in range(team_num):
-            team.append("====チーム"*str(i+1)+"====")
+            team.append("====チーム"+str(i+1)+"====")
             team.extend(members[i:len(members):team_num])
 
         await ctx.send("\n".join(team))
