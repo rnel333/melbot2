@@ -58,6 +58,7 @@ class Utilities(commands.Cog):
     @commands.command()
     async def team(self, ctx):
         """vcに参加中の人をチーム分けする"""
+        await ctx.message.delete()
         members = [i.name for i in ctx.author.voice.channel.members]
         random.shuffle(members)
         team_num = 2
