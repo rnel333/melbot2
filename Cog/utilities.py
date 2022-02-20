@@ -56,14 +56,11 @@ class Utilities(commands.Cog):
 
     #/team
     @commands.command()
-    async def team(self, ctx, arg):
+    async def team(self, ctx):
         """vcに参加中の人をチーム分けする"""
         members = [i.name for i in ctx.author.voice.channel.members]
         random.shuffle(members)
-        if arg:
-            team_num = int(arg)
-        else:
-            team_num = 2
+        team_num = 2
         team = []
         for i in range(team_num):
             team.append("====チーム"*str(i+1)+"====")
