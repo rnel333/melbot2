@@ -24,7 +24,8 @@ bot = commands.Bot(command_prefix='/', help_command=JpHelp(), intents=intents)
 Cog_pass = [
     "Cog.utilities",
     "Cog.toy",
-    "Cog.server"
+    "Cog.server",
+    "Cog.TTS"
 ]
 #cogのロード
 for cog in Cog_pass:
