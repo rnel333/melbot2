@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 apikey = 'b9U204z0r906S1d'
+userSpeaker = {"おてつ":13, "らいる":4, "ちょう":14, "rnel333":8}
 
 class TTS(commands.Cog):
     def __init__(self, bot):
@@ -51,7 +52,13 @@ class TTS(commands.Cog):
                             text = text[:-1]
                         text = text[:-1] + 'テツ'
                     
-                    mp3url = f'https://api.su-shiki.com/v2/voicevox/audio/?text={text}&key={apikey}&speaker=13&intonationScale=1'
+                    name = message.author.name
+                    if name in userSpeaker:
+                        speaker = userSpeaker[name]
+                    else:
+                        speaker = 3
+                    
+                    mp3url = f'https://api.su-shiki.com/v2/voicevox/audio/?text={text}&key={apikey}&speaker={speaker}&intonationScale=1'
                     while message.guild.voice_client.is_playing():
                         await asyncio.sleep(0.5)
                     message.guild.voice_client.play(discord.FFmpegPCMAudio(mp3url))
