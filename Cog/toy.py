@@ -3,30 +3,38 @@ from discord.ext import commands
 import random
 
 #emoji
-EmojiGood = "<:good:829573629451829288>"
-Emoji4545 = "<:4545:831556271890497586>"
-EmojiGg = "<:GG:830947631035318293>"
-EmojiWkey = "<:Wkey:831115017000714240>"
-EmojiQuestion = "<:__:829508716356960266>"
-EmojiAramu = "<:aramu:835421961852289034>"
-EmojiAtu = "<:atu:831111980445204480>"
-EmojiDknow = "<:dontknow:829574733166411776>"
-EmojiPlus = "<:giri:832925537852325910>"
-EmojiIppou = "<:ippou_takenaka:829508732937437214>"
-EmojiKaicho = "<:kaichouyazo:829835273546104923>"
-EmojiMeuu = "<:meuu:830062238701977710>"
-EmojiNaetawa = "<:naetawa:829574120840364083>"
-EmojiTakemita = "<:takenakahamita:831113307980562432>"
-EmojiTy = "<:thankyou:830061707765219359>"
-EmojiOko = "<:ungry:829835850157260800>"
-EmojiKusa = "<:wwwww:836048600416256047>"
+TDEmoji = {"4545":"<:TD_4545:831556271890497586>",
+           "ATT":"<:TD_ATT:829508732937437214>",
+           "GG":"<:TD_GG:830947631035318293>",
+           "HeIs":"<:TD_HeIs:827150581688696852>",
+           "WYH":"<:TD_WYH:831116974997897226>",
+           "Wkey":"<:TD_Wkey:831115017000714240>",
+           "aramu":"<:TD_aramu:835421961852289034>",
+           "bath":"<:TD_bath:829576087268753408>",
+           "droop":"<:TD_droop:829574120840364083>",
+           "minus":"<:TD_giriminus:892836026404454421>",
+           "plus":"<:TD_giriplus:832925537852325910>",
+           "good":"<:TD_good:829573629451829288>",
+           "iam":"<:TD_iam:829835273546104923>",
+           "idk":"<:TD_idk:829574733166411776>",
+           "judge":"<:TD_judge:831114078486396928>",
+           "kekw":"<:TD_kekw:892839023037534348>",
+           "meuu":"<:TD_meuu:830062238701977710>",
+           "pressure":"<:TD_pressure:831111980445204480>",
+           "pretend":"<:TD_pretend:885562573234249758>",
+           "question":"<:TD_question:829508716356960266>",
+           "ty":"<:TD_ty:830061707765219359>",
+           "ungry":"<:TD_ungry:829835850157260800>",
+           "kusa":"<:TD_www:836048600416256047>"
+           }
+
 EmojiTDivision = "<:TETUDIVISION:886487499382333490>"
 EmojiNumber = [':zero:',':one:',':two:',':three:',':four:',':five:',':six:',':seven:',':eight:',':nine:',':ten:']
 TakenakaTetu = ["<:take:895131529905340446>","<:naka:895131584653561906>","<:tetu:895121512821035018>"]
 
 #embed
     #slot
-Emoji = [EmojiGood,EmojiGg,EmojiAramu,EmojiAtu,EmojiKaicho,EmojiTy,EmojiOko,EmojiKusa]
+Emoji = [TDEmoji["good"], TDEmoji["gg"], TDEmoji["aramu"], TDEmoji["pressure"], TDEmoji["iam"], TDEmoji["ty"], TDEmoji["ungry"], TDEmoji["kusa"]]
 Eslot = [0,0,0]
 slot = None
 embedSlot = discord.Embed(title="slot",description=("pless" + EmojiTDivision))
