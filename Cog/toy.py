@@ -34,7 +34,7 @@ TakenakaTetu = ["<:take:895131529905340446>","<:naka:895131584653561906>","<:tet
 
 #embed
     #slot
-Emoji = [TDEmoji["good"], TDEmoji["gg"], TDEmoji["aramu"], TDEmoji["pressure"], TDEmoji["iam"], TDEmoji["ty"], TDEmoji["ungry"], TDEmoji["kusa"]]
+Emoji = [TDEmoji["good"], TDEmoji["GG"], TDEmoji["aramu"], TDEmoji["pressure"], TDEmoji["iam"], TDEmoji["ty"], TDEmoji["ungry"], TDEmoji["kusa"]]
 Eslot = [0,0,0]
 slot = None
 embedSlot = discord.Embed(title="slot",description=("pless" + EmojiTDivision))
