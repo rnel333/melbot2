@@ -1,16 +1,21 @@
-from ntpath import join
-import random
 import discord
 from discord.ext import commands
+import random
+import re
+
+#role
+appid = 954592530660466758
+testappid = 954607092243763230
 
 #emoji
 EmojiNumber = [':zero:',':one:',':two:',':three:',':four:',':five:',':six:',':seven:',':eight:',':nine:',':ten:']
 
 #embed
     #app
-embedApp = discord.Embed(title = "今日暇なひと～")
-embedApp.add_field(name=":o:",value=None)
-embedApp.add_field(name=":x:",value=None)
+embedApp = discord.Embed(title = "暇なひと～")
+embedApp.add_field(name = "募集人数", value = "---", inline=True)
+embedApp.add_field(name = "開始時刻", value = "---", inline=True)
+embedApp.add_field(name = "参加者", value = None, inline=False)
     #team
 embedTeam = discord.Embed(title = "チーム分け")
 
@@ -21,26 +26,46 @@ class Utilities(commands.Cog):
 #commands
     #/app
     @commands.command(aliases=["app"])
-    async def appeal(self, ctx, *arg):
+    async def appeal(self, ctx, *args):
         """遊べる人を募集する"""
-        global oList,xList,oUser,xUser,apper
-        oList = []
-        xList = []
-        oUser = None
-        xUser = None
+        global apper,app,react,partList,partUser
         apper = ctx.author.name
+        partList = []
+        partUser = None
+        react = []
+        desc = ""
+        
+
         await ctx.message.delete()
-        embedApp.set_author(name=apper, icon_url=ctx.author.avatar_url)
-        embedApp.set_field_at(0,name=":o:",value=oUser)
-        embedApp.set_field_at(1,name=":x:",value=xUser)
-        if arg:
-            embedApp.description = arg[0]
+        embedApp.set_author(name=apper, icon_url=ctx.author.avatar_url) # 募集者の表示
+        # arg[]の内容で処理を分岐
+        if args:
+            for arg in args:
+                if re.match(r'[0-9]{2}:[0-9]{2}', arg): # 時刻の入力
+                    embedApp.set_field_at(1, name = "開始時刻", value = arg)
+                
+                elif re.match(r'^@', arg) : # @人数
+                    embedApp.set_field_at(0, name = "募集人数", value = arg[1] + "人")
+                
+                elif re.match(r'<:([a-zA-Z0-9_]+):\d+>', arg):
+                    react.append(arg)
+                    desc += arg
+                else: # それ以外
+                    desc += arg
+            embedApp.description = desc
+        
+        app = await ctx.send(embed = embedApp)
+        if react:
+            for reaction in react:
+                await app.add_reaction(reaction)
         else:
-            embedApp.description = "なんかしよ"
-        global app
-        app = await ctx.send(embed=embedApp)
-        await app.add_reaction("⭕")
-        await app.add_reaction("❌")
+            await app.add_reaction("✋")
+        await app.add_reaction("🚫")
+        
+        partList.append(apper)
+        partUser = '\n'.join(partList)
+        embedApp.set_field_at(2, name = "参加者", value = partUser, inline = False)
+            
 
     #/dice
     @commands.command()
@@ -86,40 +111,14 @@ class Utilities(commands.Cog):
         user = payload.member
 
         if message == app:
-            global oList,xList,oUser,xUser,apper
-            #⭕のとき
-            if emoji == "⭕":
-                #xリストに名前があればリアクションと名前を消す
-                if str(user.name) in xList:
-                    xList.remove(user.name)
-                    if len(xList) > 0:
-                        xUser = '\n'.join(xList)
-                    else:
-                        xUser = None
-                    await message.remove_reaction("❌", user)
-                    embedApp.set_field_at(1,name=":x:", value=xUser)
-                #oリストに名前がなければ名前を追加
-                if str(user.name) not in oList:
-                    oList.append(user.name)
-                oUser = '\n'.join(oList)
-                embedApp.set_field_at(0,name=":o:", value=oUser)
-                await message.edit(embed=embedApp)
-             #❌のとき
-            elif emoji == "❌":
-                #oリストに名前があればリアクションと名前を消す
-                if str(user.name) in oList:
-                    oList.remove(user.name)
-                    if len(oList) > 0:
-                        oUser = '\n'.join(oList)
-                    else:
-                        oUser = None
-                    await message.remove_reaction("⭕",user)
-                    embedApp.set_field_at(0,name=":o:",value=oUser)
-                #xリストに名前がなければ名前を追加
-                if str(user.name) not in xList:
-                    xList.append(user.name)
-                xUser = '\n'.join(xList)
-                embedApp.set_field_at(1,name=":x:",value=xUser)
+            global apper,react,partList,partUser
+            #✋ or reactのとき
+            if emoji == ":raised_hand:" or emoji in react:
+                #partリスト(参加者)に名前がなければ名前を追加
+                if str(user.name) not in partList:
+                    partList.append(user.name)
+                partUser = '\n'.join(partList)
+                embedApp.set_field_at(2, name = "参加者", value = partUser, inline = False)
                 await message.edit(embed=embedApp)
             #募集中止
             elif emoji == "🚫" and user.name == apper:
