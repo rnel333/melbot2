@@ -45,7 +45,7 @@ class Utilities(commands.Cog):
                     embedApp.set_field_at(1, name = "開始時刻", value = arg)
                 
                 elif re.match(r'^@', arg) : # @人数
-                    embedApp.set_field_at(0, name = "募集人数", value = arg[1] + "人")
+                    embedApp.set_field_at(0, name = "募集人数", value = arg + "人")
                 
                 elif re.match(r'<:([a-zA-Z0-9_]+):\d+>', arg):
                     react.append(arg)
