@@ -54,6 +54,10 @@ class Utilities(commands.Cog):
                     desc += arg
             embedApp.description = desc
         
+        partList.append(apper)
+        partUser = '\n'.join(partList)
+        embedApp.set_field_at(2, name = "参加者", value = partUser, inline = False)
+        
         app = await ctx.send(embed = embedApp)
         if react:
             for reaction in react:
@@ -62,9 +66,7 @@ class Utilities(commands.Cog):
             await app.add_reaction("✋")
         await app.add_reaction("🚫")
         
-        partList.append(apper)
-        partUser = '\n'.join(partList)
-        embedApp.set_field_at(2, name = "参加者", value = partUser, inline = False)
+        
             
 
     #/dice
