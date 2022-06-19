@@ -36,7 +36,7 @@ class TTS(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         #print(message.channel.id)
-        if message.channel.id is not 781473047470669838:
+        if message.author.voice:
             if message.guild.voice_client:
                 if not message.author.bot:
                     if not message.content.startswith('/'):
