@@ -71,10 +71,6 @@ class TTS(commands.Cog):
     @commands.Cog.listener()
     async def on_voice_state_update(self,member,before,after):
         if before.channel is None:
-            if member.guild.voice_client is None:
-                await asyncio.sleep(0.5)
-                await after.channel.connect()
-            else:
                 if member.guild.voice_client.channel is after.channel:
                     text = member.name + "が入室しました"
                     mp3url = f'https://api.su-shiki.com/v2/voicevox/audio/?text={text}&key={apikey}&speaker=3&intonationScale=1'
