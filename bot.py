@@ -25,7 +25,8 @@ Cog_pass = [
     "Cog.utilities",
     "Cog.toy",
     "Cog.server",
-    "Cog.TTS"
+    "Cog.TTS",
+    "Cog.ark"
 ]
 #cogのロード
 for cog in Cog_pass:
