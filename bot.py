@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 import traceback
+import os
+from dotenv import load_dotenv
+
 
 #/help
 class JpHelp(commands.DefaultHelpCommand):
@@ -14,8 +17,8 @@ class JpHelp(commands.DefaultHelpCommand):
         return ("")
 
 #token
-f = open('TOKEN.txt','r')
-TOKEN = f.read()
+load_dotenv()
+TOKEN = os.environ['TOKEN']
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='/', help_command=JpHelp(), intents=intents)
