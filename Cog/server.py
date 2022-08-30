@@ -46,5 +46,5 @@ class Server(commands.Cog):
         await self.bot.change_presence(activity=discord.Game(f"てつのカメラ目線集"))
 
 
-def setup(bot):
-    return bot.add_cog(Server(bot))
+async def setup(bot):
+    await bot.add_cog(Server(bot))

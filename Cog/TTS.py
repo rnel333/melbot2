@@ -101,5 +101,5 @@ class TTS(commands.Cog):
                         await after.channel.connect()
 
 
-def setup(bot):
-    return bot.add_cog(TTS(bot))
+async def setup(bot):
+    await bot.add_cog(TTS(bot))

@@ -1,3 +1,4 @@
+import asyncio
 import discord
 from discord.ext import commands
 import traceback
@@ -31,12 +32,6 @@ Cog_pass = [
     "Cog.TTS",
     "Cog.ark"
 ]
-#cogのロード
-for cog in Cog_pass:
-    bot.load_extension(cog)
-
-#
-
 
 #bot起動時にコンソールに表示
 @bot.event
@@ -47,4 +42,9 @@ async def on_ready():
     print('------')
 
 #botの起動
-bot.run(TOKEN)
+async def main():
+    async with bot:
+        for cog in Cog_pass:
+            await bot.load_extension(cog)
+        await bot.start(TOKEN)
+asyncio.run(main())

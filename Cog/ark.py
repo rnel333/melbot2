@@ -25,5 +25,5 @@ class ark(commands.Cog):
         embedPet.add_field(name="攻撃", value=melee, inline=True)
         await ctx.send(embed=embedPet)
         
-def setup(bot):
-    return bot.add_cog(ark(bot))
+async def setup(bot):
+    await bot.add_cog(ark(bot))

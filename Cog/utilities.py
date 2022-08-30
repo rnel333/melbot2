@@ -1,3 +1,4 @@
+import asyncio
 import discord
 from discord.ext import commands
 import random
@@ -44,7 +45,8 @@ class Utilities(commands.Cog):
                 if re.match(r'[0-9]{2}:[0-9]{2}', arg): # 時刻の入力
                     embedApp.set_field_at(1, name = "開始時刻", value = arg)
                 
-                elif re.match(r'^@', arg) : # @人数
+                elif re.match(r'^@[0-9]', arg) : # @人数
+                    arg = arg.replace('@', '')
                     embedApp.set_field_at(0, name = "募集人数", value = arg + "人")
                 
                 elif re.match(r'<:([a-zA-Z0-9_]+):\d+>', arg):
@@ -65,9 +67,31 @@ class Utilities(commands.Cog):
         else:
             await app.add_reaction("✋")
         await app.add_reaction("🚫")
+        print(app.reaction)
         
-        
-            
+    #/set
+    @commands.command()
+    async def set(self, ctx, *args):
+        """/appを編集"""
+        react = []
+        desc = ""
+        if args:
+            for arg in args:
+                if re.match(r'[0-9]{2}:[0-9]{2}', arg): # 時刻の入力
+                    embedApp.set_field_at(1, name = "開始時刻", value = arg)
+                
+                elif re.match(r'^@[0-9]', arg) : # @人数
+                    arg.replace('@', '')
+                    embedApp.set_field_at(0, name = "募集人数", value = arg + "人")
+                
+                elif re.match(r'<:([a-zA-Z0-9_]+):\d+>', arg):
+                    react.append(arg)
+                    desc += arg
+                else: # それ以外
+                    desc += arg
+            embedApp.description = desc
+            await app.edit(embed = embedApp)
+            await app.reactions.clear()
 
     #/dice
     @commands.command()
@@ -115,7 +139,7 @@ class Utilities(commands.Cog):
         if message == app:
             global apper,react,partList,partUser
             #✋ or reactのとき
-            if emoji == ":raised_hand:" or emoji in react:
+            if emoji == "✋" or emoji in react:
                 #partリスト(参加者)に名前がなければ名前を追加
                 if str(user.name) not in partList:
                     partList.append(user.name)
@@ -126,5 +150,5 @@ class Utilities(commands.Cog):
             elif emoji == "🚫" and user.name == apper:
                 await message.delete()
 
-def setup(bot):
-    return bot.add_cog(Utilities(bot))
+async def setup(bot):
+    await bot.add_cog(Utilities(bot))

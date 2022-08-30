@@ -88,5 +88,5 @@ class Toy(commands.Cog):
             await message.edit(embed=embedSlot)
             await message.remove_reaction(emoji, user)
 
-def setup(bot):
-    return bot.add_cog(Toy(bot))
+async def setup(bot):
+    await bot.add_cog(Toy(bot))
