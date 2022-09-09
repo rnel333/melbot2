@@ -28,6 +28,8 @@ class Utilities(commands.Cog):
     #/app
     @commands.command(aliases=["app"])
     async def appeal(self, ctx, *args):
+        print("/appが呼び出されました")
+        print(args)
         """遊べる人を募集する"""
         global apper,app,react,partList,partUser
         apper = ctx.author.name
@@ -36,9 +38,9 @@ class Utilities(commands.Cog):
         react = []
         desc = ""
         
-
+        print("メッセージを削除します")
         await ctx.message.delete()
-        embedApp.set_author(name=apper, icon_url=ctx.author.avatar_url) # 募集者の表示
+        embedApp.set_author(name=apper, icon_url=ctx.author.avatar) # 募集者の表示
         # arg[]の内容で処理を分岐
         if args:
             for arg in args:
@@ -55,11 +57,15 @@ class Utilities(commands.Cog):
                 else: # それ以外
                     desc += arg
             embedApp.description = desc
+        else:
+            print("argsはありません")
+        print("Embedの情報を更新しました")
         
         partList.append(apper)
         partUser = '\n'.join(partList)
         embedApp.set_field_at(2, name = "参加者", value = partUser, inline = False)
         
+        print("Embedを送信します")
         app = await ctx.send(embed = embedApp)
         if react:
             for reaction in react:
