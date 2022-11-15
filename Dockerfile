@@ -1,7 +1,7 @@
 FROM python:3.9.2
 USER root
 
-COPY requirements.txt requirements.txt
+COPY . .
 
 RUN pip install --upgrade pip
 
