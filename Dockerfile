@@ -1,7 +1,8 @@
 FROM python:3.9.2
 USER root
 
-COPY . .
+COPY . /opt/app
+WORKDIR /opt/app
 
 RUN pip install --upgrade pip
 
