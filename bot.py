@@ -88,4 +88,3 @@ async def on_ready():
     print("ready")
 client.run(TOKEN)
 #####BOT LANCH#####
-
