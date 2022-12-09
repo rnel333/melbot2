@@ -1,14 +1,20 @@
-import os
-from dotenv import load_dotenv
-import asyncio
 import discord
 from discord.ext import commands
 from discord import app_commands
+import os
+from dotenv import load_dotenv
+import asyncio
+import paramiko
 
 #####BOT TOKEN#####
 load_dotenv()
 TOKEN = os.environ['TOKEN']
 #####BOT TOKEN#####
+
+#####ENV#####
+SERVER_IP = os.environ['SERVER_IP']
+USERNAME = os.environ['USERNAME']
+PASSWORD = os.environ['PASSWORD']
 
 ttsapikey = "b9U204z0r906S1d"
 ttsids = {412118891381391363:13, 313221694946803722:0, 502836827712126986:14, 265185184356237314:13, 502037256832286722:10}
@@ -47,6 +53,25 @@ async def bye(ctx:discord.Interaction):
     await ctx.response.send_message("切断しました", ephemeral=True)
     ttsChannel = None
 #####TTS#####
+
+#####SERVER MANAGER#####
+@tree.command(
+    name = 'start',
+    description='マインクラフトサーバーを起動します'
+)
+async def start(ctx:discord.Interaction):
+    await ctx.response.send_message('起動します', ephemeral=True)
+    with paramiko.SSHClient() as ssh:
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(SERVER_IP, username=USERNAME, password=PASSWORD)
+        stdin, stdout, stderr = ssh.exec_command('screen -r minecraft ; cd /usr/games/minecraft ; java -Xms1G -Xmx4G -jar minecraft_server.jar')
+        for o in stdout:
+            print('[std]1', o, end='')
+            if('Done' in o):
+                await ctx.followup.send('起動が完了しました', ephemeral=True)
+        if stderr:
+            await ctx.followup.send('起動に失敗しました')
+#####SERVER MANAGER#####
 
 #####EVENT LISTENER#####
 @client.event
