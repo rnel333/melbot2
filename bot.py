@@ -2,13 +2,17 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 import os
+import json
 from dotenv import load_dotenv
 import asyncio
 import paramiko
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 #####BOT TOKEN#####
 load_dotenv()
 TOKEN = os.environ['TOKEN']
+MY_GUILD_ID = os.environ['MY_GUILD_ID']
 #####BOT TOKEN#####
 
 #####ENV#####
@@ -22,6 +26,14 @@ ttsChannel = ""
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 tree = discord.app_commands.CommandTree(client)
+
+scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+credentials = ServiceAccountCredentials.from_json_keyfile_name('mel-ssb-d4b07d15e1ba.json', scope)
+gc = gspread.authorize(credentials)
+SPREADSHEET_KEY = os.environ['SPREADSHEET_KEY']
+workbook = gc.open_by_key(SPREADSHEET_KEY)
+
+Fpre = False
 
 #####TTS#####
 @tree.command(
@@ -54,6 +66,61 @@ async def bye(ctx:discord.Interaction):
     ttsChannel = None
 #####TTS#####
 
+#####ROLE MANAGER#####
+@tree.command(
+    name='role',
+    description='ロールを設定します'
+)
+@app_commands.guilds(
+    discord.Object(MY_GUILD_ID)
+)
+async def role(ctx:discord.Interaction):
+    embedCreate(ctx)
+    global embedroles
+    global msgrls
+    global editor
+    editor = ctx.user
+    print(embedroles.fields)
+    length = len(embedroles.fields)
+    embedroles.add_field(name="⛔",value="終了")
+    await ctx.response.send_message(embed=embedroles)
+    msgrls = await ctx.original_response()
+    for i in range(length):
+        await msgrls.add_reaction(NumToEmoji[i+1])
+    await msgrls.add_reaction("⛔")
+
+
+NumToEmoji = { 0:"0️⃣", 1:"1️⃣", 2:"2️⃣", 3:"3️⃣", 4:"4️⃣", 5:"5️⃣", 6:"6️⃣", 7:"7️⃣", 8:"8️⃣", 9:"9️⃣", 10:"🔟"}
+def embedCreate(ctx):
+    guild = ctx.guild
+    userRoles =[]
+    for userRole in ctx.user.roles:
+        if userRole.is_assignable():
+            roleMention = userRole.mention
+            userRoles.append(roleMention)
+    print("-----userRoles-----")
+    print(userRoles)
+    global reactions
+    global roles
+    reactions = {}
+    roles = {}
+    for role in guild.roles:
+        if role.is_assignable():
+            roles[role] = role.mention
+    print("-----roles-----")
+    print(roles)
+    for i,role in enumerate(roles.keys()):
+        reactions[NumToEmoji[i+1]] = role
+    print("-----reactions-----")
+    print(reactions)
+    global embedroles
+    embedroles = discord.Embed(title="RoleManager",description="あなたの現在のロール\n" + " ".join(userRoles))
+    embedroles.clear_fields
+    for i,role in enumerate(roles.values()):
+        embedroles.add_field(name=NumToEmoji[i+1], value=role,inline=False)
+#####ROLE MANAGER#####
+
+
 #####SERVER MANAGER#####
 @tree.command(
     name = 'start',
@@ -72,6 +139,44 @@ async def start(ctx:discord.Interaction):
         if stderr:
             await ctx.followup.send('起動に失敗しました')
 #####SERVER MANAGER#####
+
+#####SSB COMP#####
+"""
+@tree.command(
+    name='startpre',
+    description=''
+)
+@discord.app_commands.default_permissions(
+    administrator=True
+)
+async def startpre(ctx:discord.Interaction):
+    workbook.add_worksheet(title='仮登録', rows = 50, cols = 3)
+    newsheet = workbook.worksheet('仮登録')
+    newsheet.update('A1','discordName')
+    newsheet.update('B1','switchName')
+
+    global Fpre
+    Fpre = True
+
+@tree.command(
+    name='preentry',
+    description='仮登録を行います'
+)
+@discord.app_commands.guilds(
+    1031451662616903690
+)
+@discord.app_commands.describe(
+    username = "switchのユーザー名"
+)
+async def preentry(ctx:discord.Interaction, username:str):
+    global workbook
+    global Fpre
+    if Fpre:
+        worksheet = workbook.
+    else:
+        await ctx.response.send_message('仮登録が開始されていません')
+"""
+#####SSB COMP#####
 
 #####EVENT LISTENER#####
 @client.event
@@ -104,12 +209,52 @@ async def on_message(message):
                 while client.voice_clients[0].is_playing():
                     await asyncio.sleep(0.5)
                 message.guild.voice_client.play(discord.FFmpegPCMAudio(mp3url))
+
+@client.event
+async def on_reaction_add(reaction, user):
+    global msgrls
+    global editor
+    global reactions
+    global roles
+    emoji = reaction.emoji
+    if user.bot:
+            return
+    if reaction.message == msgrls:
+        if user == editor:
+            if reaction.emoji == "⛔":
+                await msgrls.delete()
+                return
+            if user.get_role(reactions[emoji].id):
+                await user.remove_roles(reactions[emoji])
+            else:
+                await user.add_roles(reactions[emoji])
+        await reaction.remove(user)
+
+@client.event
+async def on_member_update(before, after):
+    global editor
+    if before == editor:
+        if before.roles != after.roles:
+            global msgrls
+            await msgrls.edit(embed=embedReload(after))
+def embedReload(user):
+    global embedroles
+    userRoles = []
+    for userRole in user.roles:
+        if userRole.is_assignable():
+            roleMention = userRole.mention
+            userRoles.append(roleMention)
+    embedroles.description = user.mention + "の現在のロール\n" + " ".join(userRoles)
+    return embedroles
 #####EVENT LISTENER#####
 
 #####BOT LANCH#####
 @client.event
 async def on_ready():
     await tree.sync()
+    print("-----")
+    print(client.user.name)
     print("ready")
+    print("-----")
 client.run(TOKEN)
 #####BOT LANCH#####
