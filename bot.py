@@ -6,8 +6,6 @@ import json
 from dotenv import load_dotenv
 import asyncio
 import paramiko
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 
 #####BOT TOKEN#####
 load_dotenv()
@@ -27,13 +25,6 @@ intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 tree = discord.app_commands.CommandTree(client)
 
-scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-credentials = ServiceAccountCredentials.from_json_keyfile_name('mel-ssb-d4b07d15e1ba.json', scope)
-gc = gspread.authorize(credentials)
-SPREADSHEET_KEY = os.environ['SPREADSHEET_KEY']
-workbook = gc.open_by_key(SPREADSHEET_KEY)
-
-Fpre = False
 
 #####TTS#####
 @tree.command(
@@ -139,44 +130,6 @@ async def start(ctx:discord.Interaction):
         if stderr:
             await ctx.followup.send('起動に失敗しました')
 #####SERVER MANAGER#####
-
-#####SSB COMP#####
-"""
-@tree.command(
-    name='startpre',
-    description=''
-)
-@discord.app_commands.default_permissions(
-    administrator=True
-)
-async def startpre(ctx:discord.Interaction):
-    workbook.add_worksheet(title='仮登録', rows = 50, cols = 3)
-    newsheet = workbook.worksheet('仮登録')
-    newsheet.update('A1','discordName')
-    newsheet.update('B1','switchName')
-
-    global Fpre
-    Fpre = True
-
-@tree.command(
-    name='preentry',
-    description='仮登録を行います'
-)
-@discord.app_commands.guilds(
-    1031451662616903690
-)
-@discord.app_commands.describe(
-    username = "switchのユーザー名"
-)
-async def preentry(ctx:discord.Interaction, username:str):
-    global workbook
-    global Fpre
-    if Fpre:
-        worksheet = workbook.
-    else:
-        await ctx.response.send_message('仮登録が開始されていません')
-"""
-#####SSB COMP#####
 
 #####EVENT LISTENER#####
 @client.event
