@@ -105,7 +105,7 @@ def embedCreate(ctx):
     print("-----reactions-----")
     print(reactions)
     global embedroles
-    embedroles = discord.Embed(title="RoleManager",description="あなたの現在のロール\n" + " ".join(userRoles))
+    embedroles = discord.Embed(title="RoleManager", description=ctx.user.mention + "の現在のロール\n" + " ".join(userRoles))
     embedroles.clear_fields
     for i,role in enumerate(roles.values()):
         embedroles.add_field(name=NumToEmoji[i+1], value=role,inline=False)
