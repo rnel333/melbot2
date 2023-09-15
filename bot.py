@@ -118,9 +118,6 @@ def embedCreate(ctx):
     name = "team",
     description = "現在VCに接続中のユーザーをチーム分けします"
 )
-@app_commands.guilds(
-    MY_GUILD_ID
-)
 @app_commands.describe(
     num="未入力の場合2"
 )
