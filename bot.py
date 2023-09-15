@@ -6,6 +6,7 @@ import json
 from dotenv import load_dotenv
 import asyncio
 import paramiko
+import random
 
 #####BOT TOKEN#####
 load_dotenv()
@@ -112,6 +113,33 @@ def embedCreate(ctx):
 #####ROLE MANAGER#####
 
 
+#####TEAM MIXER#####
+@tree.command(
+    name = "team",
+    description = "現在VCに接続中のユーザーをチーム分けします"
+)
+@app_commands.guilds(
+    MY_GUILD_ID
+)
+@app_commands.describe(
+    num="未入力の場合2"
+)
+@app_commands.rename(
+    num = "チーム数"
+)
+async def team(ctx:discord.Interaction, num:int = 2):
+    members = [ i.mention for i in ctx.user.voice.channel.members]
+    random.shuffle(members)
+    team_num = num
+    team = []
+    for i in range(team_num):
+        team.append("====チーム"+str(i+1)+"====")
+        team.extend(members[i:len(members):team_num])
+
+    await ctx.response.send_message("\n".join(team))
+#####TEAM MIXER#####
+
+
 #####SERVER MANAGER#####
 @tree.command(
     name = 'start',
@@ -135,6 +163,7 @@ async def start(ctx:discord.Interaction):
 @client.event
 async def on_message(message):
     print(type(message.author))
+    #####TTS LISTENER#####
     if message.channel.id == ttsChannel:   # 送信先は読み上げチャンネルに設定されているか
         if client.voice_clients:   # botがvcに存在するか
             if message.author.voice:   # 送信者がvcに存在するか
@@ -162,9 +191,11 @@ async def on_message(message):
                 while client.voice_clients[0].is_playing():
                     await asyncio.sleep(0.5)
                 message.guild.voice_client.play(discord.FFmpegPCMAudio(mp3url))
+    #####TTS LISTENER#####
 
 @client.event
 async def on_reaction_add(reaction, user):
+    #####ROLE MANAGER LISTENER#####
     global msgrls
     global editor
     global reactions
@@ -182,9 +213,11 @@ async def on_reaction_add(reaction, user):
             else:
                 await user.add_roles(reactions[emoji])
         await reaction.remove(user)
+    #####ROLE MANAGER LISTENER#####
 
 @client.event
 async def on_member_update(before, after):
+    #####ROLE MANAGER LISTENER#####
     global editor
     if before == editor:
         if before.roles != after.roles:
@@ -199,6 +232,7 @@ def embedReload(user):
             userRoles.append(roleMention)
     embedroles.description = user.mention + "の現在のロール\n" + " ".join(userRoles)
     return embedroles
+    #####ROLE MANAGER LISTENER#####
 #####EVENT LISTENER#####
 
 #####BOT LANCH#####
