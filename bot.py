@@ -137,25 +137,6 @@ async def team(ctx:discord.Interaction, num:int = 2):
 #####TEAM MIXER#####
 
 
-#####SERVER MANAGER#####
-@tree.command(
-    name = 'start',
-    description='マインクラフトサーバーを起動します'
-)
-async def start(ctx:discord.Interaction):
-    await ctx.response.send_message('起動します', ephemeral=True)
-    with paramiko.SSHClient() as ssh:
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(SERVER_IP, username=USERNAME, password=PASSWORD)
-        stdin, stdout, stderr = ssh.exec_command('screen -r minecraft ; cd /usr/games/minecraft ; java -Xms1G -Xmx4G -jar minecraft_server.jar')
-        for o in stdout:
-            print('[std]1', o, end='')
-            if('Done' in o):
-                await ctx.followup.send('起動が完了しました', ephemeral=True)
-        if stderr:
-            await ctx.followup.send('起動に失敗しました')
-#####SERVER MANAGER#####
-
 #####EVENT LISTENER#####
 @client.event
 async def on_message(message):
@@ -235,6 +216,7 @@ def embedReload(user):
 #####BOT LANCH#####
 @client.event
 async def on_ready():
+    await tree.sync()
     await tree.sync(guild=discord.Object(MY_GUILD_ID))
     print("-----")
     print(client.user.name)
