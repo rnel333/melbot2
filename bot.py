@@ -216,8 +216,7 @@ def embedReload(user):
 #####BOT LANCH#####
 @client.event
 async def on_ready():
-    await tree.sync()
-    await tree.sync(guild=discord.Object(MY_GUILD_ID))
+    print(await tree.sync())
     print("-----")
     print(client.user.name)
     print("ready")
