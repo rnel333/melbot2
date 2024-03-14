@@ -20,7 +20,7 @@ USERNAME = os.environ['USERNAME']
 PASSWORD = os.environ['PASSWORD']
 
 ttsapikey = "b9U204z0r906S1d"
-ttsids = {412118891381391363:13, 313221694946803722:0, 502836827712126986:14, 265185184356237314:13, 502037256832286722:10}
+ttsids = {412118891381391363:13, 313221694946803722:0, 502836827712126986:14, 265185184356237314:14, 502037256832286722:10}
 ttsChannel = ""
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
@@ -165,7 +165,7 @@ async def on_message(message):
                     speaker = 3
 
                 print(speaker)
-                mp3url = f'https://api.su-shiki.com/v2/voicevox/audio/?text={text}&key={ttsapikey}&speaker={speaker}&intonationScale=1'
+                mp3url = f'https://deprecatedapis.tts.quest/v2/voicevox/audio/?text={text}&key={ttsapikey}&speaker={speaker}&intonationScale=1'
                 while client.voice_clients[0].is_playing():
                     await asyncio.sleep(0.5)
                 message.guild.voice_client.play(discord.FFmpegPCMAudio(mp3url))
