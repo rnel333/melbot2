@@ -28,7 +28,7 @@ tree = discord.app_commands.CommandTree(client)
 
 #####REPLY ARGS#####
 mediaChannel = [1053229905225195520, 1040139043364683817]
-replyChannel = client.get_channel(1040139043364683817)
+replyChannel = client.get_channel(1053229353531617300)
 
 #####TTS#####
 @tree.command(
