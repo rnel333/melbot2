@@ -26,9 +26,8 @@ intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 tree = discord.app_commands.CommandTree(client)
 
-#####REPLY ARGS#####
 mediaChannel = [1053229905225195520, 1040139043364683817]
-replyChannel = client.get_channel(1053229353531617300)
+
 
 #####TTS#####
 @tree.command(
@@ -192,6 +191,7 @@ async def on_raw_reaction_add(payload):
             member = client.get_user(payload.member.id)
             replyEmbed = discord.Embed(title=f'{member.mention} reply to {message.jump_url}', description=f'{message.author.mention}\n{message.content}', color=0x00ffff)
             replyEmbed.set_image(url=message.attachments[0].url)
+            replyChannel = client.get_channel(1053229353531617300)
             await replyChannel.send(embed=replyEmbed)
     #####REPLY LISTENER#####
 
