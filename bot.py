@@ -26,6 +26,9 @@ intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 tree = discord.app_commands.CommandTree(client)
 
+#####REPLY ARGS#####
+mediaChannel = [1053229905225195520, 1040139043364683817]
+replyChannel = client.get_channel(1040139043364683817)
 
 #####TTS#####
 @tree.command(
@@ -170,6 +173,27 @@ async def on_message(message):
                     await asyncio.sleep(0.5)
                 message.guild.voice_client.play(discord.FFmpegPCMAudio(mp3url))
     #####TTS LISTENER#####
+
+    #####REPLY LISTENER#####
+    if message.channel.id in mediaChannel:
+        if message.attachments:
+            await message.add_reaction('↩️')
+    #####REPLY LISTENER#####
+
+@client.event
+async def on_raw_reaction_add(payload):
+    if payload.member.bot:
+        return
+    #####REPLY LISTENER#####
+    if payload.channel_id in mediaChannel:
+        if payload.emoji.name == '↩️':
+            channel = client.get_channel(payload.channel_id)
+            message = await channel.fetch_message(payload.message_id)
+            member = client.get_user(payload.member.id)
+            replyEmbed = discord.Embed(title=f'{member.mention} reply to {message.jump_url}', description=f'{message.author.mention}\n{message.content}', color=0x00ffff)
+            replyEmbed.set_image(url=message.attachments[0].url)
+            await replyChannel.send(embed=replyEmbed)
+    #####REPLY LISTENER#####
 
 @client.event
 async def on_reaction_add(reaction, user):
